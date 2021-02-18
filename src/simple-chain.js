@@ -1,5 +1,6 @@
 const CustomError = require("../extensions/custom-error");
 
+const chainMaker = {
     chain: [],
 
     getLength() {
@@ -8,7 +9,7 @@ const CustomError = require("../extensions/custom-error");
 
     addLink(value) {
         if (value != undefined) {
-            this.chain.push(`( ${String(value)} )`);;
+            this.chain.push(`( ${String(value)} )`);
         } else {
             this.chain.push('( null )');
         }
@@ -45,7 +46,6 @@ const CustomError = require("../extensions/custom-error");
         return final_chain
 
     }
-
 };
 
 module.exports = chainMaker;
