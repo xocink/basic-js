@@ -1,68 +1,24 @@
-const CustomError = require("../extensions/custom-error");
-
 module.exports = function transform(arr) {
-      if (Array.isArray(arr) === false) {
-        throw new Error("THROWN");
+    if(Array.isArray(arr)==false){
+        throw Error("THROWN");
     }
-
-    let work_arr = [...arr];
-    if (work_arr.length === work_arr.filter(simpleCheck).length) {
-        return work_arr;
-    } else return ModArr(work_arr);
-
-    function ModArr(work_arr) {
-        let test_array = [];
-        let discard_next_check = 0;
-        let double_next_check = 0;
-        for (let i = 0; i < arr.length; i++) {
-
-            test_array.push(arr[i]);
-            if (discard_next_check == 1) {
-                test_array.pop();
-                discard_next_check -= 1;
-            }
-
-
-            if (double_next_check == 1) {
-                test_array.push(arr[i]);
-                double_next_check -= 1;
-            }
-            let last = test_array.length - 1;
-
-            if (test_array[last] === '--discard-prev') {
-                test_array.pop();
-                if (test_array.length === 0) continue;
-                test_array.pop();
-            }
-            if (test_array[last] === '--double-prev') {
-                test_array.pop();
-                test_array.push(test_array[test_array.length - 1]);
-            }
-            if (test_array[last] === '--discard-next') {
-                test_array.pop();
-                discard_next_check += 1;
-            }
-            if (test_array[last] === '--double-next') {
-                test_array.pop();
-                double_next_check += 1;
-            }
-        }
-        return test_array.filter(undefDel)
-    }
-
-    function simpleCheck(value) {
-        if (typeof value !== 'number') {
-            return false;
-        } else return true;
-    }
-
-    function undefDel(value){
-        if (value === undefined){
-            return false;
-        }else {
-            return true;
+    let result=[];
+    let inner_arr = arr;
+    let cord_seq = ["--discard-next","--discard-prev","--double-next","--double-prev"];
+    for (let i=0; i<inner_arr.length; i++){
+        if (inner_arr[i]=="--discard-next"){
+            i++;
+        } else if (inner_arr[i]=="--discard-prev"&&inner_arr[i-2]!="--discard-next"){
+            result.pop();
+        } else if (inner_arr[i]=="--double-next"&&inner_arr[i+1]!=undefined) {
+            result.push(arr[i+1]);
+        } else if (inner_arr[i]=="--double-prev"&&inner_arr[i-1]!=undefined&&inner_arr[i-2]!="--discard-next") {
+            result.push(arr[i-1]);
+        } else if (!cord_seq.includes(inner_arr[i])){
+            result.push(inner_arr[i]);
         }
     }
+    return result;
     // throw new CustomError('Not implemented');
     // remove line with error and write your code here
 };
